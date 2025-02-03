@@ -1,20 +1,14 @@
-const express = require("express");
-const axios = require("axios");
-const cors = require("cors");
+const { createServer } = require('node:http');
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+const hostname = '127.0.0.1';
+const port = 3000;
 
-app.get("/serpapi", async (req, res) => {
-    try {
-        const response = await axios.get("https://serpapi.com/search", {
-            params: req.query,
-        });
-        res.json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+const server = createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello World');
 });
 
-app.listen(3000, () => console.log("Proxy server running on port 3000"));
+server.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
