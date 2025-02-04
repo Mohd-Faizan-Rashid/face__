@@ -1,19 +1,21 @@
-const express = require('express');
-const cors = require('cors');
-const axios = require('axios');
+const express = require("express");
+const axios = require("axios");
+const cors = require("cors");
 
 const app = express();
 app.use(cors());
-app.use(express.json());
 
-app.post('/serpapi', async (req, res) => {
+app.get("/proxy", async (req, res) => {
   try {
-    const { query } = req.body;
-    const response = await axios.get(`https://serpapi.com/search?q=${query}&api_key=YOUR_API_KEY`);
+    const response = await axios.get("https://serpapi.com/search", {
+      params: req.query, // Forwarding all query parameters
+      headers: { "Authorization": `Bearer ${process.env.SERPAPI_KEY}` },
+    });
     res.json(response.data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-app.listen(3000, () => console.log('Proxy running on port 3000'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Proxy server running on port ${PORT}`));
